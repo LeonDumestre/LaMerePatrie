@@ -1,18 +1,13 @@
-
-const Discord = require("discord.js")
-const Command = require("../Structures/Command")
+const Command = require('../Structures/Command');
 
 module.exports = new Command({
 
-    name: "help",
-    description: "Explique les commandes",
-    permission: "Aucune",
+	name: 'help',
+	description: 'Explique les commandes',
+	permission: '',
 
-    async run(bot, message, args) {
+	async run(bot, message) {
+		await message.reply('Commande help');
+	},
 
-
-        await message.reply(`Commande help`)
-
-    }
-
-})
+});
