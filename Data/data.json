@@ -1,0 +1,63 @@
+{
+    "memberAdd": [
+        "Bonjour $name$, installe-toi !",
+        "Salut $name$, ça gaze ?",
+        "Qui vient de rejoindre le serveur ? C'est $name$ !",
+        "Ça alors, $name$ !",
+        "Wesh $name$ ! Ça va mon reuf ?",
+        "Incroyable ! $name$ vient d'arriver."
+    ],
+    
+    "memberRemove": [
+        "$name$ ! Nooooooooon !$name$ nous a quittés trop tôt...",
+        "Au revoir $name$ ! De toute façon on t'aimait pas...",
+        "$name$ a ragequit.",
+        "$name$ was an impostor.",
+        "$name$ fell out of the world",
+        "$name$ s'est pris une carapace bleue.",
+        "RIP ! $name$ vient de nous quitter."
+    ],
+
+    "goulag": {
+        "envoi": [
+            "$name$ a osé trahir la Mère Patrie ! Il sera goulagué pendant $time$.",
+            "$name$ est parti découvrir les conséquences du capitalisme pendant $time$.",
+            "$name$ a été goulagué $time$ pour une raison tout à fait valable (ou pas).",
+            "$name$ a été envoyé visiter nos nouveaux locaux pendant $time$.",
+            "$name$ teste une reconstitution de la grande purge, elle se termine dans $time$.",
+            "$name$ La tribu réunifiée a décidé de vous envoyer au Goulag pendant $time$, et leur sentence est irrévocable !",
+            "$name$ est parti lécher le goudron du goulag pendant $time$.",
+            "$name$ est un agent Américain, il disparaîtra $time$.",
+            "$name$ visite “l’isolateur disciplinaire” pendant $time$.",
+            "$name$ va se faire fouetter au Goulag pendant $time$, il va peut être se découvrir une passion pour le BDSM ?"
+        ],
+
+        "event": [
+            "Rongé par la culpabilité, $name_$ s'est rendu aux autorités et l'accompagnera.",
+            "Coup dur... Le juge a doublé sa peine car sa femme vient de le quitter.",
+            "Quelle chance ! Le juge était de bonne humeur et a divisé sa peine."
+        ],
+
+        "retour": {
+            "solo" : [
+                "$name$ est revenu vivant ! On a encore eu de la chance…",
+                "$name$ a compris nos valeurs de partage, il est donc de retour parmi nous.",
+                "$name$ est de nouveau prêt à travailler.",
+                "Bien joué $name$ ! Tu as gagné ton 1vs1.",
+                "Oh, oh, tiens voilà quelqu’un, $name$ !",
+                "Merci $name$ d’avoir contribué à l’effort de la patrie.",
+                "$name$ a enfin compris que le communisme C’EST BIEN !",
+                "$name$ est de retour parmi nous ! Alors c'était comment ?"
+            ],
+            "duo" : [
+                "$name$ et $name_$ sont revenus vivants ! On a encore eu de la chance…",
+                "$name$ et $name_$ ont compris nos valeurs de partage, ils sont donc de retour parmi nous.",
+                "$name$ et $name_$ sont de nouveau prêts à travailler.",
+                "Bien joué $name$ et $name_$ ! Vous avez gagné votre 1vs1.",
+                "Merci $name$ et $name_$ d’avoir contribué à l’effort de la patrie.",
+                "$name$ et $name_$ ont enfin compris que le communisme C’EST BIEN !",
+                "$name$ et $name_$ sont de retour parmi nous ! Alors c'était comment ?"
+            ]
+        }
+    }
+}

@@ -1,0 +1,19 @@
+{
+	"token": "NzU4Mzg2NjU1NjI2NTI2ODIw.X2uMnA.39fQysRNxZ8J2U_1nYepeWwsEYU",
+	"prefix": "-",
+
+	"reactionRole": {
+		"882967548260388894": {
+			"removable": true,
+			"emojis": [{
+				"name":"✅",
+                "roles": "758290554978566154"
+				}, {
+				"name": ":croix:",
+				"roles": "758290554978566154"
+				}
+			]
+		}
+	}
+
+}
