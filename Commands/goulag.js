@@ -1,131 +1,85 @@
-const Command = require('../Structures/Command');
 const Discord = require('discord.js');
 const parseDuration = require('parse-duration');
 const humanizeDuration = require('humanize-duration');
 const fs = require('fs');
+const { getServerDataInd, getServerStats, getMemberStatsInd, getServersData } = require('../Tools/global');
 
 const cooldowns = new Map();
 const cooldownsHorloge = new Map();
 
+module.exports = {
 
-module.exports = new Command({
-
-	name: 'goulag',
-	description: 'Permet de mute vocal et écrit qqun pour une durée max de 5min',
-	permission: '',
-
+	name: "goulag",
+	description: "Permet de timeout une personne pour une durée max de 5 minutes",
+	permission: "",
+	dm: false,
+	options: [
+        {
+            type: "user",
+            name: "utilisateur",
+            description: "Utilisateur a envoyé au goulag",
+            required: true
+        },
+		{
+            type: "number",
+            name: "minutes",
+            description: "Nombre de minutes entre 1 et 5",
+            required: true
+        }
+	],
 
 	async run(bot, message, args) {
+		const serversData = getServersData();
+		const serverDataInd = getServerDataInd(message.guild.id);
+		const goulagRole = message.guild.roles.cache.find(role => role.id === serversData.servers[serverDataInd].goulagRole) ? serversData.servers[serverDataInd].goulagRole : false;
 
-		const muteRole = message.guild.roles.cache.get('764953822535221248');
-		const modoRole = message.guild.roles.cache.get('757923147121950813');
-		// const channel = message.guild.channels.cache.get('887723584494116865')
-		const embed = new Discord.MessageEmbed();
+		const embed = new Discord.EmbedBuilder();
+		let targetMember = message.guild.members.cache.get(args.getUser("utilisateur").id);
 		const authorMember = message.member;
-		let targetMember;
-		let modoTargetMember = false;
-		let modoAuthorMember = false;
 		let sendAuthor = false;
 		let randNbr = 0;
-		let msg = '';
-		let msgEvent = '';
 
 		// La commande n'est pas lancé si le goulagueur est au goulag
-		if (message.member.roles.cache.get('764953822535221248')) {
-			return message.reply('Tu es au goulag !');
-		}
+		if (goulagRole && message.member.roles.cache.get(goulagRole)) return message.reply('Tu es au goulag et tu penses avoir des droits ?');
 
-		// Si la commande est incomplète
-		targetMember = message.mentions.members.first();
-		if (!targetMember) {
-			// const { size } = await message.channel.bulkDelete(Number(1), true);
-			return message.reply('Mentionne le camarade à envoyer au goulag.');
-			// .then(sent => sent.delete({timeout: 5000}))
-		}
-		let duration = parseDuration(args[2]);
-		if (!duration || (!args[2].endsWith('m') && !args[2].endsWith('s'))) {
-			return message.reply('Indique une durée valide inférieure à 5 minutes (ex : 10s, 2m10s ou 4m).');
-		}
-		if (duration >= 300001 || duration < 0) {
-			return message.reply('Indique une durée inférieure à 5 minutes.');
-		}
-		const inf = duration % 1000;
-		duration = duration - inf;
+		const minutes = args.getNumber("minutes");
+		if (minutes > 5 || minutes <= 0) return message.reply('Indique une durée entre 0 et 5');
+		let duration = parseDuration(minutes + "m");
 
 		// Si le cooldown n'est pas encore écoulé
-		const cooldown = cooldowns.get(message.author.id);
+		const cooldown = cooldowns.get(message.user.id);
 		if (cooldown) {
 			const remaining = humanizeDuration(cooldown - Date.now(), { units: ['h', 'm', 's'], round: true, delimiter: ' et ', language: 'fr' });
-			return message.reply(`Tu dois attendre ${remaining} avant de pouvoir envoyer quelqu'un d'autre au goulag.`)
-				.catch(console.error);
+			return message.reply(`Tu dois attendre ${remaining} avant de pouvoir envoyer quelqu'un d'autre au goulag.`).catch(() => {});
 		}
 
-		// Si la personne est déjà au goulag
-		if (targetMember.roles.cache.get('764953822535221248')) {
-			return message.reply('Cette personne est déjà au goulag.');
-		}
-
+		// Si la personne est déjà au goulag (ne peut pas vérifier le timeout même avec targetMember.communicationDisabledUntilTimestamp)
+		// if ((goulagRole && targetMember.roles.cache.get(goulagRole))) return message.reply('Cette personne est déjà au goulag.');
 
 		// Crée un membre dans data.json s'il n'existe pas
-		const linkStats = './Data/stats.json';
-		const fileStats = fs.readFileSync(linkStats);
-		const stats = JSON.parse(fileStats);
-		const nbrMembers = stats.membres.length;
-		let targetMemberExist = false;
-		let authorMemberExist = false;
-		let indTargetMember, indAuthorMember;
-
-		for (let i = 0; i < nbrMembers; i++) {
-			if (targetMember.id == stats.membres[i].id) {
-				targetMemberExist = true;
-				indTargetMember = i;
-			}
-			if (authorMember.id == stats.membres[i].id) {
-				authorMemberExist = true;
-				indAuthorMember = i;
-			}
-		}
-
-		if (!targetMemberExist || !authorMemberExist) {
-			const date = new Date();
-			if (!targetMemberExist) {
-				indTargetMember = stats.membres.length;
-				const newtargetMember = { 'id': targetMember.id, 'winBingo': 0, 'goulag': { 'nbrFoisAllé': 0, 'nbrFoisEnvoyé': 0, 'tpsPassé': 0, 'nbrEvent': { 'auteurEnvoyé': 0, 'tpsDoublé': 0, 'tpsDivisé': 0 }, 'ennemis': [], 'cibles': [] }, 'dateQuit': 0 };
-				stats.membres.push(newtargetMember);
-				console.log(`\x1b[90m${date.getDate()}/${date.getMonth() + 1} - ${date.getHours()}:${date.getMinutes()}\x1b[0m ||\x1b[36m ${targetMember.user.tag} (${targetMember.id}) a été ajouté à la base de données.\x1b[0m`);
-			}
-			if (!authorMemberExist && targetMember.id != authorMember.id) {
-				indAuthorMember = stats.membres.length;
-				const newMembre2 = { 'id': authorMember.id, 'winBingo': 0, 'goulag': { 'nbrFoisAllé': 0, 'nbrFoisEnvoyé': 0, 'tpsPassé': 0, 'nbrEvent': { 'auteurEnvoyé': 0, 'tpsDoublé': 0, 'tpsDivisé': 0 }, 'ennemis': [], 'cibles': [] }, 'dateQuit': 0 };
-				stats.membres.push(newMembre2);
-				console.log(`\x1b[90m${date.getDate()}/${date.getMonth() + 1} - ${date.getHours()}:${date.getMinutes()}\x1b[0m ||\x1b[36m ${authorMember.user.tag} (${authorMember.id}) a été ajouté à la base de données.\x1b[0m`);
-			}
-			if (!authorMemberExist && targetMember.id == authorMember.id) {
-				indAuthorMember = indTargetMember;
-			}
-			fs.writeFileSync(linkStats, JSON.stringify(stats));
-		}
+		const indTargetMember = getMemberStatsInd(message.guild.id, targetMember);
+		const indAuthorMember = getMemberStatsInd(message.guild.id, authorMember);
+		const stats = getServerStats(message.guild.id);
+		fs.writeFileSync(`ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
 
 
 		// Mise en place du cooldown de 1h
-		cooldowns.set(message.author.id, Date.now() + 3600000);
-		setTimeout(() => cooldowns.delete(message.author.id), 3600000);
+		cooldowns.set(message.user.id, Date.now() + 3600000);
+		setTimeout(() => cooldowns.delete(message.user.id), 3600000);
 
-		const linkData = './Data/data.json';
-		const fileData = fs.readFileSync(linkData);
+		const fileData = fs.readFileSync('./data.json');
 		const data = JSON.parse(fileData);
 		let time = humanizeDuration(duration, { language: 'fr' });
+		let msg = "", msgEvent = "";
 
 		// Si la Mère Patrie est envoyé au goulag
-		if (targetMember == message.guild.members.cache.get('758386655626526820')) {
+		if (targetMember == message.guild.members.cache.get(message.client.user.id)) {
 			targetMember = authorMember;
-			// nom = targetMember.user.tag
-			message.reply('https://tenor.com/view/uno-reverse-card-funny-uno-reverse-card-gif-17246642');
+			await message.channel.send('https://tenor.com/view/uno-reverse-card-funny-uno-reverse-card-gif-17246642');
 			msg = data.goulag.envoi[0];
 		}
 
 		else {
-
 			// Evenement aléatoire
 			randNbr = Math.floor(Math.random() * 20);
 			switch (randNbr) {
@@ -134,27 +88,27 @@ module.exports = new Command({
 				if (targetMember.user.id != authorMember.id) {
 					sendAuthor = true;
 					msgEvent = data.goulag.event[0];
-					stats.membres[indAuthorMember].goulag.nbrEvent.auteurEnvoyé++;
+					stats.members[indAuthorMember].goulag.nbrEvent.auteurEnvoyé++;
 				}
 				break;
 			case 2:
 				duration = duration * 2;
 				time = humanizeDuration(duration, { language: 'fr' });
 				msgEvent = data.goulag.event[1];
-				stats.membres[indTargetMember].goulag.nbrEvent.tpsDoublé++;
+				stats.members[indTargetMember].goulag.nbrEvent.tpsDoublé++;
 				break;
 			case 3:
 				duration = duration / 2;
 				time = humanizeDuration(duration, { language: 'fr' });
 				msgEvent = data.goulag.event[2];
-				stats.membres[indTargetMember].goulag.nbrEvent.tpsDivisé++;
+				stats.members[indTargetMember].goulag.nbrEvent.tpsDivisé++;
 				break;
 			}
 
 			// Choix random et envoi du message d'envoi au goulag
 			randNbr = Math.floor(Math.random() * data.goulag.envoi.length);
 			msg = data.goulag.envoi[randNbr];
-			if (targetMember.user.id == authorMember.id) msg = 'Le sadomaso ' + msg;
+			// if (targetMember.user.id == authorMember.id) msg = 'Le sadomaso ' + msg;
 		}
 
 		msg = msg + '\n' + msgEvent;
@@ -162,94 +116,74 @@ module.exports = new Command({
 		msg = msg.replace('$name_$', `${authorMember}`);
 		msg = msg.replace('$time$', `**${time}**`);
 
-		// Envoi du message d'envoie et gestion de l'horologe du footer
+		// Envoi du message d'envoi au goulag et gestion de l'horloge du footer
 		cooldownsHorloge.set(targetMember.id, Date.now() + duration);
-		let tempsRestant = cooldownsHorloge.get(targetMember.id) - Date.now();
+		let timeLeft = cooldownsHorloge.get(targetMember.id) - Date.now();
 
-		embed.setColor('BLACK').setDescription(msg).setFooter('Il reste : ' + humanizeDuration(tempsRestant, { round: true }, { language: 'fr' }));
-		const msgSend = await message.reply({ embeds: [embed] });
+		embed.setColor(0x000000).setDescription(msg).setFooter({ text: 'Il reste : ' + humanizeDuration(timeLeft, { round: true }, { language: 'fr' }) });
+		await message.reply({ embeds: [embed] });
 
 		const interval = setInterval(() => {
-			tempsRestant = cooldownsHorloge.get(targetMember.id) - Date.now();
-			if (tempsRestant > 0) {
-				embed.setFooter('Il reste : ' + humanizeDuration(tempsRestant, { round: true }, { language: 'fr' }));
-			}
-			else {
-				embed.setFooter('');
-				msgSend.edit({ embeds: [embed] });
-			}
-		}, 5000);
-
-
-		// Si un modoTargetMember est envoyé au goulag
-		if (targetMember.roles.cache.get(modoRole.id)) {
-			modoTargetMember = true;
-			targetMember.roles.remove(modoRole);
-		}
-		if (authorMember.roles.cache.get(modoRole.id) && sendAuthor) {
-			modoAuthorMember = true;
-			authorMember.roles.remove(modoRole);
-		}
+			timeLeft = cooldownsHorloge.get(targetMember.id) - Date.now();
+			if (timeLeft > 1000) embed.setFooter({ text: 'Il reste : ' + humanizeDuration(timeLeft, { round: true }, { language: 'fr' }) });
+			else embed.setFooter({ text: ' ' });
+			message.editReply({ embeds: [embed] });
+		}, 3000);
 
 
 		// Envoi au goulag
-		await targetMember.roles.add(muteRole);
-		if (targetMember.voice.channel) targetMember.voice.setMute(true);
+		if (goulagRole) await targetMember.roles.add(goulagRole);
+		targetMember.timeout(duration).catch(() => {});
 
-		stats.membres[indTargetMember].goulag.nbrFoisAllé++;
-		stats.membres[indAuthorMember].goulag.nbrFoisEnvoyé++;
-		stats.membres[indTargetMember].goulag.tpsPassé += duration;
+		stats.members[indTargetMember].goulag.nbrFoisAllé++;
+		stats.members[indAuthorMember].goulag.nbrFoisEnvoyé++;
+		stats.members[indTargetMember].goulag.tpsPassé += duration;
 
-		let ennemiExiste = false;
-		for (let i = 0; i < stats.membres[indTargetMember].goulag.ennemis.length; i++) {
-			if (authorMember.id == stats.membres[indTargetMember].goulag.ennemis[i].id) {
-				stats.membres[indTargetMember].goulag.ennemis[i].nbr++;
-				ennemiExiste = true;
+		let ennemiExist = false;
+		for (let i = 0; i < stats.members[indTargetMember].goulag.ennemis.length; i++) {
+			if (authorMember.id == stats.members[indTargetMember].goulag.ennemis[i].id) {
+				stats.members[indTargetMember].goulag.ennemis[i].nbr++;
+				ennemiExist = true;
 			}
 		}
-		if (!ennemiExiste) {
+		if (!ennemiExist) {
 			const ennemi = { 'id': authorMember.id, 'nbr': 1 };
-			stats.membres[indTargetMember].goulag.ennemis.push(ennemi);
+			stats.members[indTargetMember].goulag.ennemis.push(ennemi);
 		}
 
 		if (sendAuthor) {
-			await authorMember.roles.add(muteRole);
-			if (authorMember.voice.channel) authorMember.voice.setMute(true);
-
-			stats.membres[indAuthorMember].goulag.nbrFoisAllé++;
-			stats.membres[indAuthorMember].goulag.tpsPassé += duration;
+			if (goulagRole) await authorMember.roles.add(goulagRole);
+			authorMember.timeout(duration).catch(() => {});
+			stats.members[indAuthorMember].goulag.nbrFoisAllé++;
+			stats.members[indAuthorMember].goulag.tpsPassé += duration;
 		}
 
 		let targetExist = false;
-		for (let i = 0; i < stats.membres[indAuthorMember].goulag.cibles.length; i++) {
-			if (targetMember.id == stats.membres[indAuthorMember].goulag.cibles[i].id) {
-				stats.membres[indAuthorMember].goulag.cibles[i].nbr++;
+		for (let i = 0; i < stats.members[indAuthorMember].goulag.cibles.length; i++) {
+			if (targetMember.id == stats.members[indAuthorMember].goulag.cibles[i].id) {
+				stats.members[indAuthorMember].goulag.cibles[i].nbr++;
 				targetExist = true;
 			}
 		}
 		if (!targetExist) {
 			const target = { 'id': targetMember.id, 'nbr': 1 };
-			stats.membres[indAuthorMember].goulag.cibles.push(target);
+			stats.members[indAuthorMember].goulag.cibles.push(target);
 		}
 
-		fs.writeFileSync(linkStats, JSON.stringify(stats));
+		fs.writeFileSync(`ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
 
 
 		// Retour du goulag
 		setTimeout(() => {
 			if (targetMember.deleted) return;
-			targetMember.roles.remove(muteRole);
-			if (targetMember.voice.channel) targetMember.voice.setMute(false);
-			if (modoTargetMember) targetMember.roles.add(modoRole);
+			if (goulagRole) targetMember.roles.remove(goulagRole);
 
 			cooldownsHorloge.delete(targetMember.id);
 			clearInterval(interval);
 
 			if (sendAuthor) {
 				if (authorMember.deleted) return;
-				authorMember.roles.remove(muteRole);
-				if (authorMember.voice.channel) authorMember.voice.setMute(false);
-				if (modoAuthorMember) authorMember.roles.add(modoRole);
+				if (goulagRole) authorMember.roles.remove(goulagRole);
 			}
 
 			// Choix random et envoi du message de retour du goulag
@@ -265,10 +199,10 @@ module.exports = new Command({
 			msg = msg.replace('$name$', `${targetMember}`);
 			msg = msg.replace('$time$', `**${time}**`);
 
-			embed.setColor('GREEN').setDescription(msg).setFooter('');
+			embed.setColor(0x389738).setDescription(msg).setFooter({ text: ' ' })
 			message.channel.send({ embeds: [embed] });
 
 		}, duration);
 
-	},
-});
+	}
+}

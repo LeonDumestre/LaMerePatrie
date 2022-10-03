@@ -5,17 +5,24 @@
         "Qui vient de rejoindre le serveur ? C'est $name$ !",
         "Ça alors, $name$ !",
         "Wesh $name$ ! Ça va mon reuf ?",
-        "Incroyable ! $name$ vient d'arriver."
+        "Incroyable ! $name$ vient d'arriver.",
+        "Bienvenue $name$, n'hésite pas à payer ta tournée !",
+        "Et c'est $name$ qui rentre dans le cercle !",
+        "Après avoir bravé les mers et les terres arides, voici $name$ venu nous prêcher la bonne parole !",
+        "La légende raconte que le 666e jour, Dieu créa $name$ pour ajouter du piment à ce serveur !"
     ],
     
     "memberRemove": [
-        "$name$ ! Nooooooooon !$name$ nous a quittés trop tôt...",
+        "$name$ nous a quittés trop tôt...",
         "Au revoir $name$ ! De toute façon on t'aimait pas...",
         "$name$ a ragequit.",
         "$name$ was an impostor.",
-        "$name$ fell out of the world",
+        "$name$ fell out of the world...",
         "$name$ s'est pris une carapace bleue.",
-        "RIP ! $name$ vient de nous quitter."
+        "RIP ! $name$ vient de nous quitter.",
+        "Retourne lécher du goudron $name$ !",
+        "$name$ ? C'est qui ça ?",
+        "Adieu $name$ ! On t'as déjà oublié."
     ],
 
     "goulag": {
@@ -29,7 +36,9 @@
             "$name$ est parti lécher le goudron du goulag pendant $time$.",
             "$name$ est un agent Américain, il disparaîtra $time$.",
             "$name$ visite “l’isolateur disciplinaire” pendant $time$.",
-            "$name$ va se faire fouetter au Goulag pendant $time$, il va peut être se découvrir une passion pour le BDSM ?"
+            "$name$ va se faire fouetter au Goulag pendant $time$, il va peut être se découvrir une passion pour le BDSM ?",
+            "Travail, Famille et Goulag pendant $time$ pour $name$ !",
+            "Et le gagnant d'un magnifique séjour en Russie de $time$ est $name$ !"
         ],
 
         "event": [

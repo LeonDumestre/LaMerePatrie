@@ -1,27 +1,16 @@
-/*
-Création de la commande ping
-Lien de la vidéo : https://www.youtube.com/watch?v=eQzNWGyAAmI
-*/
 
-const Command = require('../Structures/Command');
+module.exports = {
 
-module.exports = new Command({
-
-	name: 'ping',
-	description: 'Affiche le ping du bot et le ping de l\'API Discord',
-	permission: 'Aucune',
+	name: "ping",
+	description: "Affiche la latence du BOT",
+	permission: "",
+	dm: true,
 
 	async run(bot, message) {
 
 		const startTime = Date.now();
-
-		await message.reply('en cours...').then(async msg => {
-
-			const endTime = Date.now();
-
-			await msg.edit(`\`Latence du BOT\` : ${endTime - startTime}ms\n\`Latence de l'API Discord\` : ${bot.ws.ping}ms`);
-		});
-
-	},
-
-});
+		await message.reply('en cours...')
+		const endTime = Date.now();
+		await message.editReply(`\`Latence du BOT\` : ${endTime - startTime}ms\n\`Latence de l'API Discord\` : ${bot.ws.ping}ms`);
+	}
+}

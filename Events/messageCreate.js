@@ -1,56 +1,67 @@
-/*
-Envoie d'un message sur le serveur et des logs
-Lien de la vidéo : https://www.youtube.com/watch?v=uE5gEKd2se4
-*/
+const Discord = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
+const fs = require('fs');
+const { getServerDataInd, getServersData, getServerStats, getMemberStatsInd } = require("../Tools/global");
 
+let time, delay;
 
-/** @format */
+module.exports = async (bot, message) => {
 
-const Event = require('../Structures/Event.js');
-const Discord = require('discord.js');
+    // Bingo
+    if (!isNaN(message.content)) {
+        const embed = new EmbedBuilder();
+        const serverDataInd = getServerDataInd(message.guild.id);
+        let serversData = getServersData();
+		let bingoData = serversData.servers[serverDataInd].bingo;
+    
+        if (bingoData.winNumber && message.channel.id === bingoData.currentChannel) {
+            const member = message.member;
+    
+            // Cooldown bingo
+            const interval = setInterval(function() {
 
-module.exports = new Event('messageCreate', async (bot, message) => {
+                let serversData = getServersData();
+                let bingoData = serversData.servers[serverDataInd].bingo;
 
-	if (message.author.bot) return;
-	if (!message.content.startsWith(bot.prefix)) return;
+                if (bingoData.winNumber !== 0) {
+                    if (!time) {
+                        delay = Date.now() + 300000;
+                        time = true;
+                    }
+                    if (Date.now() >= delay) {
+                        embed.setColor(0x000000).setTitle('\u26A0\uFE0F Le temps est écoulé, le 🎉 Bingo 🎉 est fini !').setDescription(`*Le nombre gagnant était : ${bingoData.winNumber}*`);
+                        bot.channels.cache.get(bingoData.currentChannel).send({ embeds: [embed] });
+                        resetBingoData(serverDataInd);
+                        time = false;
+                        clearInterval(interval);
+                    }
+                }
+            }, 1000);
 
-	const args = message.content.substring(bot.prefix.length).split(/ +/);
+            if (message.content == bingoData.winNumber) {
+                embed.setColor(0x389738).setDescription(`🎉 **BRAVO** ${member} 🎉 Tu as **gagné** !!! 🎊 \n *Le nombre gagnant était : ${bingoData.winNumber}`);
+                bot.channels.cache.get(bingoData.currentChannel).send({ embeds: [embed] });
+                resetBingoData(serversData, serverDataInd);
+                time = false;
+    
+    
+                // Crée un membre et compléte winBingo
+                const memberStatsInd = getMemberStatsInd(message.guild.id, member);
+                const stats = getServerStats(message.guild.id);
+                stats.members[memberStatsInd].winBingo++;
+                fs.writeFileSync(`./ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
+            }
+        }
+    }
+}
 
-	const command = bot.commands.find(cmd => cmd.name == args[0]);
-
-	if (!command) return;
-	/* message.reply(`${args[0]} n'existe pas !`) */
-
-	const idCatCitation = '892330675422789722';
-	const idCat2A = '882670135234678865';
-	const idCatMatiere2A = '789256851023855637';
-	const idCat1A = '882669976140546058';
-	const idCatMatiere1A = '882637919163154442';
-	const idCatDelegue = '789213580058427442';
-	const idAdmin = '757922602319609927';
-	if (message.channel.parent == null || (message.channel.parent.id == idCatCitation || message.channel.parent.id == idCat2A || message.channel.parent.id == idCatMatiere2A || message.channel.parent.id == idCat1A || message.channel.parent.id == idCatMatiere1A || message.channel.parent.id == idCatDelegue) && !message.member.roles.cache.get(idAdmin)) {
-		const reponseBOT = await message.reply('Tu ne peux pas faire de commande ici, vas dans un endoit plus approprié');
-		await message.delete();
-		setTimeout(() => reponseBOT.delete(), 4000);
-		return;
-	}
-
-	command.run(bot, message, args);
-
-	const date = new Date();
-	const options = { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-	const dateString = date.toLocaleDateString('fr', options).replace(',', ' -');
-
-	const text = message.content;
-	console.log(`\x1b[90m${dateString}\x1b[0m ||\x1b[36m ${message.author.username} (${message.member.id})\x1b[0m ||\x1b[35m ${message.channel.name}\x1b[0m ||\x1b[31m ${command.name}\x1b[0m || '\x1b[3m\x1b[33m${text}\x1b[0m'`);
-
-	const embed = new Discord.MessageEmbed();
-	const channelLog = bot.channels.cache.get('895594255932882944');
-	embed.setTitle(`${command.name}`)
-		.setDescription(`'*${text}*'`)
-		.addField('Channel :', `<#${message.channel.id}>`, true)
-		.addField('Auteur :', `<@!${message.member.id}>`, true)
-		.setThumbnail(message.member.user.displayAvatarURL())
-		.setFooter(dateString);
-	channelLog.send({ embeds: [embed] });
-});
+function resetBingoData(serversData, serverDataInd) {
+    try {
+        serversData.servers[serverDataInd].bingo.currentChannel = "";
+        serversData.servers[serverDataInd].bingo.winNumber = 0;
+        const data = JSON.stringify(serversData);
+        fs.writeFileSync(`./ServersData/servers.json`, data);
+    } catch (error) {
+        console.log(error);
+    }
+}
