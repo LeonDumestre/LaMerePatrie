@@ -1,13 +1,13 @@
-const Discord = require("discord.js");
-const { REST } = require("@discordjs/rest");
-const { Routes } = require("discord.js");
+import { SlashCommandBuilder } from "discord.js";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord.js";
 
-module.exports = async bot => {
+export default async bot => {
 	const commands = [];
 
 	bot.commands.forEach(command => {
         
-		const slashCommand = new Discord.SlashCommandBuilder()
+		const slashCommand = new SlashCommandBuilder()
 			.setName(command.name)
 			.setDescription(command.description)
 			.setDefaultMemberPermissions(command.permission === "" ? null : command.permission)
@@ -25,5 +25,4 @@ module.exports = async bot => {
 	const rest = new REST({ version: 10 }).setToken(bot.token);
 	await rest.put(Routes.applicationCommands(bot.user.id), { body: commands });
 	console.log("Les commandes slash ont été créées avec succès !");
-
 };

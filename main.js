@@ -1,12 +1,12 @@
-const Discord = require("discord.js");
-const intents = new Discord.IntentsBitField(3276799);
-const bot = new Discord.Client({ intents });
-const config = require("./config");
-const loadCommands = require("./Loaders/loadCommands");
-const loadEvents = require("./Loaders/loadEvents");
+import { IntentsBitField, Client, Collection } from "discord.js";
+const intents = new IntentsBitField(3276799);
+const bot = new Client({ intents });
+import { token } from "./config.js";
+import loadCommands from "./Loaders/loadCommands.js";
+import loadEvents from "./Loaders/loadEvents.js";
 
-bot.commands = new Discord.Collection();
+bot.commands = new Collection();
 
-bot.login(config.token);
+bot.login(token);
 loadCommands(bot);
 loadEvents(bot);

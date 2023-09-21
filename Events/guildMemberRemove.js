@@ -1,8 +1,8 @@
-const Discord = require("discord.js");
-const fs = require("fs");
-const { getServerStats, getMemberStatsInd, getServerDataInd, getServersData } = require("../Tools/global");
+import { EmbedBuilder } from "discord.js";
+import { readFileSync, writeFileSync } from "fs";
+import { getServerStats, getMemberStatsInd, getServerDataInd, getServersData } from "../Tools/global.js";
 
-module.exports = async (bot, member) => {
+export default async (bot, member) => {
 
 	const serverDataInd = getServerDataInd(member.guild.id);
 	const serverData = getServersData().servers[serverDataInd];
@@ -12,7 +12,7 @@ module.exports = async (bot, member) => {
 		const channel = member.guild.channels.cache.get(serverData.welcomeChannel);
 		if (channel) {
 
-			const fileData = fs.readFileSync("./data.json");
+			const fileData = readFileSync("./data.json");
 			const msgData = JSON.parse(fileData);
 
 			let name = member.user.tag;
@@ -22,7 +22,7 @@ module.exports = async (bot, member) => {
 			let msg = msgData.memberRemove[nbr];
 			msg = msg.replace("$name$", `${name}`);
 
-			const embed = new Discord.EmbedBuilder();
+			const embed = new EmbedBuilder();
 			const date = new Date();
 			const options = { year: "2-digit", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" };
 			const dateString = date.toLocaleDateString("fr", options).replace(",", " -");
@@ -38,7 +38,7 @@ module.exports = async (bot, member) => {
 			const memberStatsInd = getMemberStatsInd(member.guild.id, member);
 			const stats = getServerStats(member.guild.id);
 			stats.members[memberStatsInd].dateQuit = Date.now();
-			fs.writeFileSync(`./ServersData/Stats/${member.guild.id}.json`, JSON.stringify(stats));
+			writeFileSync(`./ServersData/Stats/${member.guild.id}.json`, JSON.stringify(stats));
 		}
 	}
 

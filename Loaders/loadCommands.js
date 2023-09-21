@@ -1,9 +1,9 @@
-const fs = require("fs");
+import { readdirSync } from "fs";
 
-module.exports = async bot => {
-	fs.readdirSync("./Commands").filter(f => f.endsWith(".js")).forEach(async file => {
+export default async bot => {
+	readdirSync("./Commands").filter(f => f.endsWith(".js")).forEach(async file => {
 
-		const command = require(`../Commands/${file}`);
+		const command = import(`../Commands/${file}`);
 		bot.commands.set(command.name, command);
 		console.log(`Commande ${file.split(".js").join("")} chargée avec succès !`);
 	});

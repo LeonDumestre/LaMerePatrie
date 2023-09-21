@@ -1,23 +1,19 @@
-const Discord = require("discord.js");
+import { PermissionFlagsBits } from "discord.js";
 
-module.exports = {
-
-	name: "msg",
-	description: "Le message est renvoyé par le BOT",
-	permission: Discord.PermissionFlagsBits.Administrator,
-	dm: false,
-	options: [
-		{
-			type: "string",
-			name: "message",
-			description: "Message à envoyer",
-			required: true,
-		},
-	],
-
-	async run(bot, message, args) {
-
-		await message.reply({ content: "Le message a bien été envoyé !", ephemeral: true });
-		await message.channel.send(args.getString("message"));
+export const name = "msg";
+export const description = "Le message est renvoyé par le BOT";
+export const permission = PermissionFlagsBits.Administrator;
+export const dm = false;
+export const options = [
+	{
+		type: "string",
+		name: "message",
+		description: "Message à envoyer",
+		required: true,
 	},
-};
+];
+export async function run(bot, message, args) {
+
+	await message.reply({ content: "Le message a bien été envoyé !", ephemeral: true });
+	await message.channel.send(args.getString("message"));
+}

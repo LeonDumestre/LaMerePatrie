@@ -1,8 +1,8 @@
-const Discord = require("discord.js");
-const fs = require("fs");
-const { getServerStats, getMemberStatsInd, getServersData, getServerDataInd } = require("../Tools/global");
+import { EmbedBuilder } from "discord.js";
+import { readFileSync, writeFileSync } from "fs";
+import { getServerStats, getMemberStatsInd, getServersData, getServerDataInd } from "../Tools/global.js";
 
-module.exports = async (bot, member) => {
+export default async (bot, member) => {
 
 	const serverDataInd = getServerDataInd(member.guild.id);
 	const serverData = getServersData().servers[serverDataInd];
@@ -11,7 +11,7 @@ module.exports = async (bot, member) => {
 
 		const channel = member.guild.channels.cache.get(serverData.welcomeChannel);
 		if (channel) {
-			const fileData = fs.readFileSync("./data.json");
+			const fileData = readFileSync("./data.json");
 			const msgData = JSON.parse(fileData);
 
 			let name = member.user.tag;
@@ -21,7 +21,7 @@ module.exports = async (bot, member) => {
 			let msg = msgData.memberAdd[nbr];
 			msg = msg.replace("$name$", `${name}`);
 
-			const embed = new Discord.EmbedBuilder();
+			const embed = new EmbedBuilder();
 			embed
 				.setTitle(msg)
 				.setColor(0x389738)
@@ -39,7 +39,7 @@ module.exports = async (bot, member) => {
 			const memberStatsInd = getMemberStatsInd(member.guild.id, member);
 			const stats = getServerStats(member.guild.id);
 			stats.members[memberStatsInd].dateQuit = 0;
-			fs.writeFileSync(`./ServersData/Stats/${member.guild.id}.json`, JSON.stringify(stats));
+			writeFileSync(`./ServersData/Stats/${member.guild.id}.json`, JSON.stringify(stats));
 		}
 	}
 

@@ -1,10 +1,10 @@
-const { EmbedBuilder } = require("discord.js");
-const fs = require("fs");
-const { getServerDataInd, getServersData, getServerStats, getMemberStatsInd } = require("../Tools/global");
+import { EmbedBuilder } from "discord.js";
+import { writeFileSync } from "fs";
+import { getServerDataInd, getServersData, getServerStats, getMemberStatsInd } from "../Tools/global.js";
 
 let time, delay;
 
-module.exports = async (bot, message) => {
+export default async (bot, message) => {
 
 	// Bingo
 	if (!isNaN(message.content)) {
@@ -45,7 +45,7 @@ module.exports = async (bot, message) => {
 				const memberStatsInd = getMemberStatsInd(message.guild.id, member);
 				const stats = getServerStats(message.guild.id);
 				stats.members[memberStatsInd].winBingo++;
-				fs.writeFileSync(`./ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
+				writeFileSync(`./ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
 			}
 		}
 	}
@@ -56,7 +56,7 @@ function resetBingoData(serversData, serverDataInd) {
 		serversData.servers[serverDataInd].bingo.currentChannel = "";
 		serversData.servers[serverDataInd].bingo.winNumber = 0;
 		const data = JSON.stringify(serversData);
-		fs.writeFileSync("./ServersData/servers.json", data);
+		writeFileSync("./ServersData/servers.json", data);
 	}
 	catch (error) {
 		console.log(error);
