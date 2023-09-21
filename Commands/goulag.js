@@ -141,7 +141,9 @@ module.exports = {
 		}
 		catch (error) {console.log(error);}
 		try {
-			if (!targetMember.permissions.has(Discord.PermissionFlagsBits.Administrator)) targetMember.timeout(duration);
+			if (!targetMember.permissions.has(Discord.PermissionFlagsBits.Administrator)) {
+				targetMember.timeout(duration);
+			}
 		}
 		catch (error) {console.log(error);}
 
@@ -166,7 +168,9 @@ module.exports = {
 			}
 			catch (error) {console.log(error);}
 			try {
-				if (!authorMember.permissions.has(Discord.PermissionFlagsBits.Administrator)) authorMember.timeout(duration);
+				if (!authorMember.permissions.has(Discord.PermissionFlagsBits.Administrator)) {
+					authorMember.timeout(duration);
+				}
 			}
 			catch (error) {console.log(error);}
 			stats.members[indAuthorMember].goulag.nbrFoisAllé++;

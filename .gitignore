@@ -1,5 +1,5 @@
 /.vscode
 /node_modules
-config.json
+config.js
 /ServersData/Stats/*
 /ServersData/servers.json
