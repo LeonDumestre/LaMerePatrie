@@ -1,12 +1,12 @@
-const Discord = require('discord.js');
-const fs = require('fs');
-const { getServersData, getServerDataInd } = require('../Tools/global');
+const Discord = require("discord.js");
+const fs = require("fs");
+const { getServersData, getServerDataInd } = require("../Tools/global");
 
 module.exports = {
 
-	name: 'bingo',
-	description: 'Lance un bingo où tu devras trouver le nombre entre 1 et 100',
-	permission: '',
+	name: "bingo",
+	description: "Lance un bingo où tu devras trouver le nombre entre 1 et 100",
+	permission: "",
 
 	run: async (bot, interaction) => {
 
@@ -21,11 +21,11 @@ module.exports = {
 			const jsonData = JSON.stringify(serversData);
 			fs.writeFileSync("./ServersData/servers.json", jsonData);
 
-			embed.setColor(0x0000FF).setTitle('🎉 LE BINGO COMMENCE !!! 🎉').setDescription('*Trouve le nombre entre 1 et 100*');
+			embed.setColor(0x0000FF).setTitle("🎉 LE BINGO COMMENCE !!! 🎉").setDescription("*Trouve le nombre entre 1 et 100*");
 			interaction.reply({ embeds: [embed] });
 		}
 		else {
 			interaction.reply(`Un bingo est déjà lancé dans <#${bingoData.currentChannel}>.`);
 		}
-	}
-}
+	},
+};

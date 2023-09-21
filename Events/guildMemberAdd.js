@@ -1,25 +1,25 @@
-const Discord = require('discord.js');
-const fs = require('fs');
-const { getServerStats, getMemberStatsInd, getServersData, getServerDataInd } = require('../Tools/global');
+const Discord = require("discord.js");
+const fs = require("fs");
+const { getServerStats, getMemberStatsInd, getServersData, getServerDataInd } = require("../Tools/global");
 
 module.exports = async (bot, member) => {
 
 	const serverDataInd = getServerDataInd(member.guild.id);
-    const serverData = getServersData().servers[serverDataInd];
-	console.log()
+	const serverData = getServersData().servers[serverDataInd];
+	console.log();
 	if (serverData.options.welcome) {
-		
+
 		const channel = member.guild.channels.cache.get(serverData.welcomeChannel);
 		if (channel) {
-			const fileData = fs.readFileSync('./data.json');
+			const fileData = fs.readFileSync("./data.json");
 			const msgData = JSON.parse(fileData);
 
 			let name = member.user.tag;
-			name = name.substring(0, name.indexOf('#'));
+			name = name.substring(0, name.indexOf("#"));
 
 			const nbr = Math.floor(Math.random() * msgData.memberAdd.length);
 			let msg = msgData.memberAdd[nbr];
-			msg = msg.replace('$name$', `${name}`);
+			msg = msg.replace("$name$", `${name}`);
 
 			const embed = new Discord.EmbedBuilder();
 			embed
@@ -31,8 +31,8 @@ module.exports = async (bot, member) => {
 			channel.send({ embeds: [embed] });
 
 			const date = new Date();
-			const options = { year: '2-digit', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
-			const dateString = date.toLocaleDateString('fr', options).replace(',', ' -');
+			const options = { year: "2-digit", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" };
+			const dateString = date.toLocaleDateString("fr", options).replace(",", " -");
 
 			console.log(`\x1b[90m${dateString}\x1b[0m || \x1b[32m${member.guild.name} (${member.guild.id})\x1b[0m ||\x1b[36m ${member.user.tag} (${member.id}) a rejoint le serveur !\x1b[0m`);
 
@@ -57,4 +57,4 @@ module.exports = async (bot, member) => {
 			channel.setName(`Membres : ${memberCount}`);
 		}
 	}
-}
+};

@@ -1,7 +1,6 @@
-const Discord = require('discord.js');
-const fs = require('fs');
-const humanizeDuration = require('humanize-duration');
-const { getServerStats } = require('../Tools/global');
+const Discord = require("discord.js");
+const humanizeDuration = require("humanize-duration");
+const { getServerStats } = require("../Tools/global");
 
 module.exports = {
 
@@ -10,13 +9,13 @@ module.exports = {
 	permission: "",
 	dm: false,
 	options: [
-        {
-            type: "user",
-            name: "utilisateur",
-            description: "Utilisateur à afficher",
-            required: true
-        }
-    ],
+		{
+			type: "user",
+			name: "utilisateur",
+			description: "Utilisateur à afficher",
+			required: true,
+		},
+	],
 
 	async run(bot, message, args) {
 		const stats = getServerStats(message.guild.id);
@@ -35,12 +34,12 @@ module.exports = {
 		}
 
 		const shortHumanizer = humanizeDuration.humanizer({
-			language: 'shortFr',
+			language: "shortFr",
 			languages: {
-				shortFr: { d: () => 'j', h: () => 'h', m: () => 'min', s: () => 's' },
-			}
+				shortFr: { d: () => "j", h: () => "h", m: () => "min", s: () => "s" },
+			},
 		});
-		let ennemi = '', target = '';
+		let ennemi = "", target = "";
 		let nbEnnemi = 0, nbTarget = 0;
 
 		if (memberExist) {
@@ -63,30 +62,30 @@ module.exports = {
 			if (nbTarget != 0) target = `Ta cible préféré : <@${idTarget}>\n *Tu l'as envoyé* ***${nbTarget} fois*** *au goulag.*`;
 		}
 
-			let plural = '';
-			if (!memberExist || stats.members[ind].winBingo != 1) plural = 's';
+		let plural = "";
+		if (!memberExist || stats.members[ind].winBingo != 1) plural = "s";
 
-			let goulagTime = '0 min'
-			if (memberExist && stats.members[ind].goulag.tpsPassé >= 0) goulagTime = shortHumanizer(stats.members[ind].goulag.tpsPassé, { maxDecimalPoints: 0 }).replaceAll(',', '');
-			
-			embed.setTitle(`📈 Statistiques de ${user.username} 📈`)
-				.setColor('#F79E58')
-				.addFields({ name: '\u200B', value: `**Ｂｉｎｇｏ :**ㅤ🎉 ${memberExist ? stats.members[ind].winBingo : '0'} victoire${plural} 🎉` })
-				.addFields({ name: '\u200B', value: '**Ｇｏｕｌａｇ :**' })
-				.addFields({ name: '⛓️ Aller simple', value: memberExist ? stats.members[ind].goulag.nbrFoisAllé.toString() : '0', inline: true })
-				.addFields({ name: '👮 Personnes envoyées', value: memberExist ? stats.members[ind].goulag.nbrFoisEnvoyé.toString() : '0', inline: true })
-				.addFields({ name: '⌛ Temps passé', value: goulagTime, inline: true })
-				.setThumbnail(user.displayAvatarURL());
+		let goulagTime = "0 min";
+		if (memberExist && stats.members[ind].goulag.tpsPassé >= 0) goulagTime = shortHumanizer(stats.members[ind].goulag.tpsPassé, { maxDecimalPoints: 0 }).replaceAll(",", "");
 
-			// .addField(`\u200B`, '**Ｅｖｅｎｔ :**')
+		embed.setTitle(`📈 Statistiques de ${user.username} 📈`)
+			.setColor("#F79E58")
+			.addFields({ name: "\u200B", value: `**Ｂｉｎｇｏ :**ㅤ🎉 ${memberExist ? stats.members[ind].winBingo : "0"} victoire${plural} 🎉` })
+			.addFields({ name: "\u200B", value: "**Ｇｏｕｌａｇ :**" })
+			.addFields({ name: "⛓️ Aller simple", value: memberExist ? stats.members[ind].goulag.nbrFoisAllé.toString() : "0", inline: true })
+			.addFields({ name: "👮 Personnes envoyées", value: memberExist ? stats.members[ind].goulag.nbrFoisEnvoyé.toString() : "0", inline: true })
+			.addFields({ name: "⌛ Temps passé", value: goulagTime, inline: true })
+			.setThumbnail(user.displayAvatarURL());
 
-			// .addField('Retour à l'envoyeur',stats.members[ind].goulag.nbrEvent.auteurEnvoyé.toString(),true)
-			// .addField('Temps doublé',stats.members[ind].goulag.nbrEvent.tpsDoublé.toString(),true)
-			// .addField('Temps divisé',stats.members[ind].goulag.nbrEvent.tpsDivisé.toString(),true)
+		// .addField(`\u200B`, '**Ｅｖｅｎｔ :**')
 
-		if (memberExist && nbEnnemi != 0) embed.addFields({name: '\u200B', value: ennemi });
-		if (memberExist && nbTarget != 0) embed.addFields({name: '\u200B', value: target });
-		
+		// .addField('Retour à l'envoyeur',stats.members[ind].goulag.nbrEvent.auteurEnvoyé.toString(),true)
+		// .addField('Temps doublé',stats.members[ind].goulag.nbrEvent.tpsDoublé.toString(),true)
+		// .addField('Temps divisé',stats.members[ind].goulag.nbrEvent.tpsDivisé.toString(),true)
+
+		if (memberExist && nbEnnemi != 0) embed.addFields({ name: "\u200B", value: ennemi });
+		if (memberExist && nbTarget != 0) embed.addFields({ name: "\u200B", value: target });
+
 		message.reply({ embeds: [embed] });
-	}
-}
+	},
+};
