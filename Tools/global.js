@@ -8,8 +8,15 @@ module.exports = {
     },
 
     getServerStats: function(guildId) {
-		const file = fs.readFileSync(`./ServersData/Stats/${guildId}.json`);
-		return JSON.parse(file);
+	// create file if not exist
+        let statsExist = false;
+        fs.readdirSync("./ServersData/Stats").filter(f => f.endsWith(".json")).forEach(async file => {
+            if (file.split(".json").join("") == guildId) statsExist = true;
+        });
+
+        if (!statsExist) fs.writeFileSync(`ServersData/Stats/${guildId}.json`, JSON.stringify({"members":[]}));
+	const file = fs.readFileSync(`./ServersData/Stats/${guildId}.json`);
+	return JSON.parse(file);
     },
 
     getServerDataInd : function(guildId) {

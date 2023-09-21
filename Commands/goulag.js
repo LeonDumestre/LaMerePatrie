@@ -29,6 +29,8 @@ module.exports = {
 	],
 
 	async run(bot, message, args) {
+		//return message.reply({ content: "Aïe ! Le Goulag n\'est pas disponible pour le moment...", ephemeral: true });
+
 		const serversData = getServersData();
 		const serverDataInd = getServerDataInd(message.guild.id);
 		const goulagRole = message.guild.roles.cache.find(role => role.id === serversData.servers[serverDataInd].goulagRole) ? serversData.servers[serverDataInd].goulagRole : false;
@@ -43,7 +45,7 @@ module.exports = {
 		if (goulagRole && message.member.roles.cache.get(goulagRole)) return message.reply('Tu es au goulag et tu penses avoir des droits ?');
 
 		const minutes = args.getNumber("minutes");
-		if (minutes > 5 || minutes <= 0) return message.reply('Indique une durée entre 0 et 5');
+		if (minutes > 5 || minutes <= 0) return message.reply({ content: 'Indique une durée entre 0 et 5', ephemeral: true });
 		let duration = parseDuration(minutes + "m");
 
 		// Si le cooldown n'est pas encore écoulé
@@ -54,7 +56,7 @@ module.exports = {
 		}
 
 		// Si la personne est déjà au goulag (ne peut pas vérifier le timeout même avec targetMember.communicationDisabledUntilTimestamp)
-		// if ((goulagRole && targetMember.roles.cache.get(goulagRole))) return message.reply('Cette personne est déjà au goulag.');
+		if ((goulagRole && targetMember.roles.cache.get(goulagRole))) return message.reply('Cette personne est déjà au goulag.');
 
 		// Crée un membre dans data.json s'il n'existe pas
 		const indTargetMember = getMemberStatsInd(message.guild.id, targetMember);
@@ -62,10 +64,9 @@ module.exports = {
 		const stats = getServerStats(message.guild.id);
 		fs.writeFileSync(`ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
 
-
-		// Mise en place du cooldown de 1h
-		cooldowns.set(message.user.id, Date.now() + 3600000);
-		setTimeout(() => cooldowns.delete(message.user.id), 3600000);
+		// Mise en place du cooldown de 30 minutes
+		cooldowns.set(message.user.id, Date.now() + 1800000);
+		setTimeout(() => cooldowns.delete(message.user.id), 1800000);
 
 		const fileData = fs.readFileSync('./data.json');
 		const data = JSON.parse(fileData);
@@ -120,7 +121,10 @@ module.exports = {
 		cooldownsHorloge.set(targetMember.id, Date.now() + duration);
 		let timeLeft = cooldownsHorloge.get(targetMember.id) - Date.now();
 
-		embed.setColor(0x000000).setDescription(msg).setFooter({ text: 'Il reste : ' + humanizeDuration(timeLeft, { round: true }, { language: 'fr' }) });
+		embed
+			.setColor(0x000000)
+			.setDescription(msg)
+			.setFooter({ text: 'Il reste : ' + humanizeDuration(timeLeft, { round: true }, { language: 'fr' }) });
 		await message.reply({ embeds: [embed] });
 
 		const interval = setInterval(() => {
@@ -128,12 +132,16 @@ module.exports = {
 			if (timeLeft > 1000) embed.setFooter({ text: 'Il reste : ' + humanizeDuration(timeLeft, { round: true }, { language: 'fr' }) });
 			else embed.setFooter({ text: ' ' });
 			message.editReply({ embeds: [embed] });
-		}, 3000);
+		}, 1000);
 
 
 		// Envoi au goulag
-		if (goulagRole) await targetMember.roles.add(goulagRole);
-		targetMember.timeout(duration).catch(() => {});
+		try {
+			if (goulagRole && !targetMember.permissions.has(Discord.PermissionFlagsBits.Administrator) && !targetMember.roles.cache.some(r => r == goulagRole)) await targetMember.roles.add(goulagRole);
+		} catch (error) {console.log(error)};
+		try {
+			if (!targetMember.permissions.has(Discord.PermissionFlagsBits.Administrator)) targetMember.timeout(duration);
+		} catch (error) {console.log(error)};
 
 		stats.members[indTargetMember].goulag.nbrFoisAllé++;
 		stats.members[indAuthorMember].goulag.nbrFoisEnvoyé++;
@@ -150,10 +158,13 @@ module.exports = {
 			const ennemi = { 'id': authorMember.id, 'nbr': 1 };
 			stats.members[indTargetMember].goulag.ennemis.push(ennemi);
 		}
-
 		if (sendAuthor) {
-			if (goulagRole) await authorMember.roles.add(goulagRole);
-			authorMember.timeout(duration).catch(() => {});
+			try {
+				if (goulagRole) await authorMember.roles.add(goulagRole);
+			} catch (error) {console.log(error)};
+			try {
+				if (!authorMember.permissions.has(Discord.PermissionFlagsBits.Administrator)) authorMember.timeout(duration);
+			} catch (error) {console.log(error)};
 			stats.members[indAuthorMember].goulag.nbrFoisAllé++;
 			stats.members[indAuthorMember].goulag.tpsPassé += duration;
 		}
@@ -169,21 +180,21 @@ module.exports = {
 			const target = { 'id': targetMember.id, 'nbr': 1 };
 			stats.members[indAuthorMember].goulag.cibles.push(target);
 		}
-
 		fs.writeFileSync(`ServersData/Stats/${message.guild.id}.json`, JSON.stringify(stats));
-
-
+		
 		// Retour du goulag
 		setTimeout(() => {
 			if (targetMember.deleted) return;
-			if (goulagRole) targetMember.roles.remove(goulagRole);
-
+			try {
+				if (goulagRole) targetMember.roles.remove(goulagRole);
+			} catch (error) {console.log(error)};
 			cooldownsHorloge.delete(targetMember.id);
 			clearInterval(interval);
-
 			if (sendAuthor) {
 				if (authorMember.deleted) return;
-				if (goulagRole) authorMember.roles.remove(goulagRole);
+				try {
+					if (goulagRole) authorMember.roles.remove(goulagRole);
+				} catch (error) {console.log(error)};
 			}
 
 			// Choix random et envoi du message de retour du goulag

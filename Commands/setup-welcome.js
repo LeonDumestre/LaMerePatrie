@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { getServerDataInd, getServersData } = require("../Tools/global");
+const { getServerDataInd, getServersData } = require("../../Tools/global");
 const fs = require('fs');
 
 module.exports = {
