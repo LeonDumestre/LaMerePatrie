@@ -11,9 +11,9 @@ export const generalConfig: GeneralConfigType = {
 
 	// useful links
 	links: {
-		invite: 'https://www.change_invite_link_here.com',
-		supportServer: 'https://discord.com/your_invitation_link',
-		gitRemoteRepo: 'https://github.com/barthofu/tscord',
+		invite: 'https://discord.com/api/oauth2/authorize?client_id=895311879960924201&permissions=8&scope=bot%20applications.commands',
+		supportServer: 'https://discord.gg/mVcYrPydRd',
+		gitRemoteRepo: 'https://github.com/LeonDumestre/LaMerePatrie',
 	},
 	
 	automaticUploadImagesToImgur: false, // enable or not the automatic assets upload
