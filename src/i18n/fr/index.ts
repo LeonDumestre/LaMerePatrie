@@ -15,6 +15,14 @@ const fr = {
 		NO_COMMAND_DESCRIPTION: 'Aucune description fournie.',
 	},
 	COMMANDS: {
+		BINGO: {
+			START: {
+				EMBED: {
+					TITLE: '🎉 LE BINGO COMMENCE !!! 🎉',
+					DESCRIPTION: 'Trouve le nombre entre 1 et 100',
+				},
+			},
+		},
 		INVITE: {
 			DESCRIPTION: 'Invitez le bot sur votre serveur!',
 			EMBED: {

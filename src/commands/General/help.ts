@@ -1,5 +1,5 @@
 import { Category } from "@discordx/utilities"
-import { ActionRowBuilder, APISelectMenuOption, CommandInteraction, EmbedBuilder, inlineCode, StringSelectMenuBuilder, StringSelectMenuInteraction  } from "discord.js"
+import { ActionRowBuilder, APISelectMenuOption, CommandInteraction, EmbedBuilder, StringSelectMenuBuilder, StringSelectMenuInteraction  } from "discord.js"
 import { Client, MetadataStorage, SelectMenuComponent } from "discordx"
 
 import { Discord, Slash } from "@decorators"

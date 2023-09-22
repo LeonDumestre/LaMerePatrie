@@ -8,8 +8,6 @@ export type BaseLocale = 'en'
 export type Locales =
 	| 'en'
 	| 'fr'
-	| 'ru'
-	| 'uk'
 
 export type Translation = RootTranslation
 
@@ -47,6 +45,20 @@ type RootTranslation = {
 		NO_COMMAND_DESCRIPTION: string
 	}
 	COMMANDS: {
+		BINGO: {
+			START: {
+				EMBED: {
+					/**
+					 * �​�​ ​T​H​E​ ​B​I​N​G​O​ ​B​E​G​I​N​S​ ​!​!​!​ ​�​�
+					 */
+					TITLE: string
+					/**
+					 * F​i​n​d​ ​t​h​e​ ​n​u​m​b​e​r​ ​b​e​t​w​e​e​n​ ​1​ ​a​n​d​ ​1​0​0
+					 */
+					DESCRIPTION: string
+				}
+			}
+		}
 		INVITE: {
 			/**
 			 * I​n​v​i​t​e​ ​t​h​e​ ​b​o​t​ ​t​o​ ​y​o​u​r​ ​s​e​r​v​e​r​!
@@ -206,6 +218,20 @@ export type TranslationFunctions = {
 		NO_COMMAND_DESCRIPTION: () => LocalizedString
 	}
 	COMMANDS: {
+		BINGO: {
+			START: {
+				EMBED: {
+					/**
+					 * 🎉 THE BINGO BEGINS !!! 🎉
+					 */
+					TITLE: () => LocalizedString
+					/**
+					 * Find the number between 1 and 100
+					 */
+					DESCRIPTION: () => LocalizedString
+				}
+			}
+		}
 		INVITE: {
 			/**
 			 * Invite the bot to your server!
