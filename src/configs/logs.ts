@@ -19,12 +19,6 @@ export const logsConfig: LogsConfigType = {
         ]
     },
 
-    simpleCommand: {
-        file: true,
-        console: true,
-        channel: null
-    },
-
     newUser: {
         file: true,
         console: true,

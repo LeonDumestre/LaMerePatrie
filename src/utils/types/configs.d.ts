@@ -7,7 +7,6 @@ type GeneralConfigType = {
     timezone: string
     automaticUploadImagesToImgur: boolean
     
-    simpleCommandsPrefix: string
     automaticDeferring: boolean
 
     links: {
@@ -50,12 +49,6 @@ type LogsConfigType = {
         channel: string | null
 
         exclude: InteractionsConstants[]
-    }
-
-    simpleCommand: {
-        file: boolean
-        console: boolean
-        channel: string | null
     }
 
     newUser: {

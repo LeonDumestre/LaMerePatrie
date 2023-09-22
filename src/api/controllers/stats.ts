@@ -55,7 +55,6 @@ export class StatsController extends BaseController {
         
         const commandsUsage = {
             slashCommands: await this.stats.countStatsPerDays('CHAT_INPUT_COMMAND_INTERACTION', numberOfDays),
-            simpleCommands: await this.stats.countStatsPerDays('SIMPLE_COMMAND_MESSAGE', numberOfDays),
             userContextMenus: await this.stats.countStatsPerDays('USER_CONTEXT_MENU_COMMAND_INTERACTION', numberOfDays),
             messageContextMenus: await this.stats.countStatsPerDays('MESSAGE_CONTEXT_MENU_COMMAND_INTERACTION', numberOfDays),
         }
@@ -65,7 +64,6 @@ export class StatsController extends BaseController {
             body.push({
                 date: commandsUsage.slashCommands[i].date,
                 slashCommands: commandsUsage.slashCommands[i].count,
-                simpleCommands: commandsUsage.simpleCommands[i].count,
                 contextMenus: commandsUsage.userContextMenus[i].count + commandsUsage.messageContextMenus[i].count
             })
         }

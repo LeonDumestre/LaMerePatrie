@@ -6,8 +6,6 @@ export {
     Guild,
     ModalComponent,
     SelectMenuComponent,
-    SimpleCommand,
-    SimpleCommandOption,
 } from 'discordx'
 
 export * from './On'

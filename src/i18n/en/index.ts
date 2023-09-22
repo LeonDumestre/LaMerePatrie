@@ -16,6 +16,7 @@ const en = {
 	},
 	COMMANDS: {
 		BINGO: {
+			DESCRIPTION: 'Play bingo and find the number between 1 and 100!',
 			START: {
 				EMBED: {
 					TITLE: '🎉 THE BINGO BEGINS !!! 🎉',
@@ -28,19 +29,6 @@ const en = {
 			EMBED: {
 				TITLE: 'Invite me on your server!',
 				DESCRIPTION: '[Click here]({link}) to invite me!',
-			},
-		},
-		PREFIX: {
-			NAME: 'prefix',
-			DESCRIPTION: 'Change the prefix of the bot.',
-			OPTIONS: {
-				PREFIX: {
-					NAME: 'new_prefix',
-					DESCRIPTION: 'The new prefix of the bot.',
-				},
-			},
-			EMBED: {
-				DESCRIPTION: 'Prefix changed to `{prefix:string}`.',
 			},
 		},
 		MAINTENANCE: {

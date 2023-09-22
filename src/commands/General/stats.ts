@@ -16,14 +16,13 @@ const statsResolver: StatsResolverType = [
 		name: 'COMMANDS',
 		data: async (stats: Stats, days: number) => {
 			
-			const simpleCommandMessages = await stats.countStatsPerDays('SIMPLE_COMMAND_MESSAGE', days)
 			const commandInteractions = await stats.countStatsPerDays('CHAT_INPUT_COMMAND_INTERACTION', days)
 			const userContextMenus = await stats.countStatsPerDays('USER_CONTEXT_MENU_COMMAND_INTERACTION', days)
 			const messageContextMenus = await stats.countStatsPerDays('MESSAGE_CONTEXT_MENU_COMMAND_INTERACTION', days)
 
 	  
 	  		return stats.sumStats(
-				stats.sumStats(simpleCommandMessages, commandInteractions),
+				commandInteractions,
 				stats.sumStats(userContextMenus, messageContextMenus)
 			)
 		}

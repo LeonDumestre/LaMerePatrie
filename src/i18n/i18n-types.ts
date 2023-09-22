@@ -46,6 +46,10 @@ type RootTranslation = {
 	}
 	COMMANDS: {
 		BINGO: {
+			/**
+			 * P​l​a​y​ ​b​i​n​g​o​ ​a​n​d​ ​f​i​n​d​ ​t​h​e​ ​n​u​m​b​e​r​ ​b​e​t​w​e​e​n​ ​1​ ​a​n​d​ ​1​0​0​!
+			 */
+			DESCRIPTION: string
 			START: {
 				EMBED: {
 					/**
@@ -74,35 +78,6 @@ type RootTranslation = {
 				 * @param {unknown} link
 				 */
 				DESCRIPTION: RequiredParams<'link'>
-			}
-		}
-		PREFIX: {
-			/**
-			 * p​r​e​f​i​x
-			 */
-			NAME: string
-			/**
-			 * C​h​a​n​g​e​ ​t​h​e​ ​p​r​e​f​i​x​ ​o​f​ ​t​h​e​ ​b​o​t​.
-			 */
-			DESCRIPTION: string
-			OPTIONS: {
-				PREFIX: {
-					/**
-					 * n​e​w​_​p​r​e​f​i​x
-					 */
-					NAME: string
-					/**
-					 * T​h​e​ ​n​e​w​ ​p​r​e​f​i​x​ ​o​f​ ​t​h​e​ ​b​o​t​.
-					 */
-					DESCRIPTION: string
-				}
-			}
-			EMBED: {
-				/**
-				 * P​r​e​f​i​x​ ​c​h​a​n​g​e​d​ ​t​o​ ​`​{​p​r​e​f​i​x​}​`​.
-				 * @param {string} prefix
-				 */
-				DESCRIPTION: RequiredParams<'prefix'>
 			}
 		}
 		MAINTENANCE: {
@@ -219,6 +194,10 @@ export type TranslationFunctions = {
 	}
 	COMMANDS: {
 		BINGO: {
+			/**
+			 * Play bingo and find the number between 1 and 100!
+			 */
+			DESCRIPTION: () => LocalizedString
 			START: {
 				EMBED: {
 					/**
@@ -246,34 +225,6 @@ export type TranslationFunctions = {
 				 * [Click here]({link}) to invite me!
 				 */
 				DESCRIPTION: (arg: { link: unknown }) => LocalizedString
-			}
-		}
-		PREFIX: {
-			/**
-			 * prefix
-			 */
-			NAME: () => LocalizedString
-			/**
-			 * Change the prefix of the bot.
-			 */
-			DESCRIPTION: () => LocalizedString
-			OPTIONS: {
-				PREFIX: {
-					/**
-					 * new_prefix
-					 */
-					NAME: () => LocalizedString
-					/**
-					 * The new prefix of the bot.
-					 */
-					DESCRIPTION: () => LocalizedString
-				}
-			}
-			EMBED: {
-				/**
-				 * Prefix changed to `{prefix}`.
-				 */
-				DESCRIPTION: (arg: { prefix: string }) => LocalizedString
 			}
 		}
 		MAINTENANCE: {

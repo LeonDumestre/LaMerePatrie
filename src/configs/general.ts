@@ -1,12 +1,11 @@
 export const generalConfig: GeneralConfigType = {
 
-	name: 'tscord', // the name of your bot
+	name: 'la-mere-patrie', // the name of your bot
 	description: '', // the description of your bot
-	defaultLocale: 'en', // default language of the bot, must be a valid locale
-	ownerId: process.env['BOT_OWNER_ID'] || '',
+	defaultLocale: 'fr', // default language of the bot, must be a valid locale
+	ownerId: process.env['359376874524114944'] || '',
 	timezone: 'Europe/Paris', // default TimeZone to well format and localize dates (logs, stats, etc)
 
-	simpleCommandsPrefix: '!', // default prefix for simple command messages (old way to do commands on discord)
 	automaticDeferring: true, // enable or not the automatic deferring of the replies of the bot on the command interactions
 
 	// useful links
@@ -18,7 +17,9 @@ export const generalConfig: GeneralConfigType = {
 	
 	automaticUploadImagesToImgur: false, // enable or not the automatic assets upload
 
-	devs: [], // discord IDs of the devs that are working on the bot (you don't have to put the owner's id here)
+	devs: [
+		"306858204015362049" // https://github.com/loic-prn
+	],
 
 	eval: {
 		name: 'bot', // name to trigger the eval command
@@ -32,7 +33,7 @@ export const generalConfig: GeneralConfigType = {
 			type: 'PLAYING'
 		},
 		{
-			text: 'some knowledge',
+			text: 'le goulag',
 			type: 'STREAMING'
 		}
 	]
@@ -41,6 +42,5 @@ export const generalConfig: GeneralConfigType = {
 
 // global colors
 export const colorsConfig = {
-
 	primary: '#2F3136'
 }

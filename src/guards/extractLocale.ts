@@ -1,5 +1,5 @@
 import { ButtonInteraction, CommandInteraction, ContextMenuCommandInteraction, Interaction, StringSelectMenuInteraction } from "discord.js"
-import { GuardFunction, SimpleCommandMessage } from "discordx"
+import { GuardFunction } from "discordx"
 
 import { getLocaleFromInteraction, L } from "@i18n"
 
@@ -8,8 +8,7 @@ import { getLocaleFromInteraction, L } from "@i18n"
  */
 export const ExtractLocale: GuardFunction<Interaction> = async (interaction, client, next, guardData) => {
     if (
-        interaction instanceof SimpleCommandMessage
-        || interaction instanceof CommandInteraction
+        interaction instanceof CommandInteraction
         || interaction instanceof ContextMenuCommandInteraction
         || interaction instanceof StringSelectMenuInteraction
         || interaction instanceof ButtonInteraction

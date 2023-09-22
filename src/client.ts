@@ -33,10 +33,4 @@ export const clientConfig = {
 		Maintenance,
 		ExtractLocale
 	],
-
-	// configuration for @SimpleCommand
-	simpleCommand: {
-		prefix: generalConfig.simpleCommandsPrefix,
-	}
-	
 }

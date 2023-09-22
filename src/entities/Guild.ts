@@ -15,9 +15,6 @@ export class Guild extends CustomBaseEntity {
     @PrimaryKey({ autoincrement: false })
     id!: string
 
-    @Property({ nullable: true, type: 'string' })
-    prefix: string | null
-
     @Property()
     deleted: boolean = false
 

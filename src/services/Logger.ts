@@ -38,7 +38,6 @@ export class Logger {
     }
     private interactionTypeReadable: { [key in InteractionsConstants]: string } = {
         "CHAT_INPUT_COMMAND_INTERACTION": "Slash command",
-        "SIMPLE_COMMAND_MESSAGE": "Simple command",
         "CONTEXT_MENU_INTERACTION": "Context menu",
         "BUTTON_INTERACTION": "Button",
         "SELECT_MENU_INTERACTION": "Select menu",
@@ -392,15 +391,14 @@ export class Logger {
 
         // commands
         const slashCommands = MetadataStorage.instance.applicationCommandSlashes
-        const simpleCommands = MetadataStorage.instance.simpleCommands
         const contextMenus = [
             ...MetadataStorage.instance.applicationCommandMessages,
             ...MetadataStorage.instance.applicationCommandUsers
         ]
-        const commandsSum = slashCommands.length + simpleCommands.length + contextMenus.length
+        const commandsSum = slashCommands.length + contextMenus.length
 
         this.console(chalk.blue(`${symbol} ${numberAlign(commandsSum)} ${chalk.bold('commands')} loaded`), 'info', true)
-        this.console(chalk.dim.gray(`${tab}┝──╾ ${numberAlign(slashCommands.length)} slash commands\n${tab}┝──╾ ${numberAlign(simpleCommands.length)} simple commands\n${tab}╰──╾ ${numberAlign(contextMenus.length)} context menus`), 'info', true)
+        this.console(chalk.dim.gray(`${tab}┝──╾ ${numberAlign(slashCommands.length)} slash commands\n${tab}╰──╾ ${numberAlign(contextMenus.length)} context menus`), 'info', true)
 
         // events
         const events = MetadataStorage.instance.events

@@ -1,6 +1,6 @@
 import { EntityRepository } from "@mikro-orm/core"
 import { constant } from "case"
-import { Client, SimpleCommandMessage } from "discordx"
+import { Client } from "discordx"
 import osu from "node-os-utils"
 import pidusage from "pidusage"
 import { delay, inject, singleton } from "tsyringe"
@@ -12,8 +12,7 @@ import { Database, WebSocket } from "@services"
 import { datejs, formatDate, getTypeOfInteraction, isInMaintenance, resolveAction, resolveChannel, resolveGuild, resolveUser } from "@utils/functions"
 
 const allInteractions = { 
-    $or: [ 
-        { type: 'SIMPLE_COMMAND_MESSAGE' }, 
+    $or: [
         { type: 'CHAT_INPUT_COMMAND_INTERACTION' },
         { type: 'USER_CONTEXT_MENU_COMMAND_INTERACTION' },
         { type: 'MESSAGE_CONTEXT_MENU_COMMAND_INTERACTION' },
@@ -64,25 +63,6 @@ export class Stats {
             user: resolveUser(interaction)?.id,
             guild: resolveGuild(interaction)?.id || 'dm',
             channel: resolveChannel(interaction)?.id
-        }
-
-        // add it to the db
-        await this.register(type, value, additionalData)
-    }
-
-    /**
-     * Record a simple command message and add it to the database.
-     * @param command 
-     */
-    async registerSimpleCommand(command: SimpleCommandMessage) {
-
-        // we extract data from the interaction
-        const type = 'SIMPLE_COMMAND_MESSAGE'
-        const value = command.name
-        const additionalData = {
-            user: command.message.author.id,
-            guild: command.message.guild?.id || 'dm',
-            channel: command.message.channel?.id
         }
 
         // add it to the db

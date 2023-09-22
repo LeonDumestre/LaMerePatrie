@@ -1,5 +1,5 @@
 import { CommandInteraction, ContextMenuCommandInteraction } from "discord.js"
-import { GuardFunction, SimpleCommandMessage } from "discordx"
+import { GuardFunction } from "discordx"
 
 import { getLocaleFromInteraction, L } from "@i18n"
 import { isDev, replyToInteraction, resolveUser } from "@utils/functions"
@@ -9,7 +9,6 @@ import { isDev, replyToInteraction, resolveUser } from "@utils/functions"
  */
 export const Disabled: GuardFunction<
     | CommandInteraction
-    | SimpleCommandMessage
     | ContextMenuCommandInteraction
 > = async (arg, client, next) => {
 
@@ -19,7 +18,7 @@ export const Disabled: GuardFunction<
         return next()
     }
     else {
-        if (arg instanceof CommandInteraction || arg instanceof SimpleCommandMessage) {
+        if (arg instanceof CommandInteraction) {
 
             const locale = getLocaleFromInteraction(arg),
                   localizedReplyMessage = L[locale].GUARDS.DISABLED_COMMAND()

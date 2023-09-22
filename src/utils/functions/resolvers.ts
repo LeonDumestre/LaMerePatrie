@@ -1,4 +1,3 @@
-import { SimpleCommandMessage } from "discordx"
 import {
     CommandInteraction,
 	ChatInputCommandInteraction,
@@ -18,7 +17,6 @@ import packageJson from "../../../package.json"
 const resolvers = {
 
 	user: {
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.message.author,
 		ChatInputCommandInteraction: (interaction: ChatInputCommandInteraction) => interaction.user,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.member?.user,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.member?.user,
@@ -36,7 +34,6 @@ const resolvers = {
 	},
 
 	member: {
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.message.member,
 		ChatInputCommandInteraction: (interaction: ChatInputCommandInteraction) => interaction.member,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.member,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.member,
@@ -54,7 +51,6 @@ const resolvers = {
 	},
 
 	guild: {
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.message.guild,
 		ChatInputCommandInteraction: (interaction: ChatInputCommandInteraction) => interaction.guild,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.guild,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.guild,
@@ -68,7 +64,6 @@ const resolvers = {
 
 	channel: {
 		ChatInputCommandInteraction: (interaction: ChatInputCommandInteraction) => interaction.channel,
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.message.channel,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.channel,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.channel,
 		
@@ -80,7 +75,6 @@ const resolvers = {
 	},
 
 	commandName: {
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.name,
 		ChatInputCommandInteraction: (interaction: ChatInputCommandInteraction) => interaction.commandName,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.commandName,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.commandName,
@@ -94,7 +88,6 @@ const resolvers = {
 				+ (interaction?.options.getSubcommandGroup(false) ? ' ' + interaction.options.getSubcommandGroup(false) : '')
 				+ (interaction?.options.getSubcommand(false) ? ' ' + interaction.options.getSubcommand(false) : '')
 		},
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.name,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.commandName,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.commandName,
 		
@@ -106,7 +99,6 @@ const resolvers = {
 	},
 
 	locale: {
-		SimpleCommandMessage: (interaction: SimpleCommandMessage) => interaction.message.guild?.preferredLocale ?? 'default',
 		ChatInputCommandInteraction: (interaction: ChatInputCommandInteraction) => interaction.locale,
 		UserContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.locale,
 		MessageContextMenuCommandInteraction: (interaction: ContextMenuCommandInteraction) => interaction.locale,
@@ -135,7 +127,7 @@ export const resolveChannel = (interaction: AllInteractions) => {
 	return resolvers.channel[getTypeOfInteraction(interaction) as keyof typeof resolvers.channel]?.(interaction) || resolvers.channel['fallback'](interaction)
 }
 
-export const resolveCommandName = (interaction: CommandInteraction | SimpleCommandMessage) => {
+export const resolveCommandName = (interaction: CommandInteraction) => {
 	return resolvers.commandName[interaction.constructor.name as keyof typeof resolvers.commandName]?.(interaction) || resolvers.commandName['fallback'](interaction)
 }
 
