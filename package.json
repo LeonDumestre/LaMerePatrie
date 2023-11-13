@@ -19,7 +19,7 @@
   "homepage": "https://github.com/Tayaress09/LaMerePatrie#readme",
   "dependencies": {
     "@discordjs/rest": "2.0.1",
-    "discord.js": "14.13.0",
+    "discord.js": "14.14.1",
     "fs": "^0.0.1-security",
     "humanize-duration": "3.30.0",
     "parse-duration": "1.1.0"
